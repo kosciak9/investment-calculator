@@ -5,6 +5,18 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+import Typography from "typography";
+
+const typography = new Typography({
+  baseFontSize: "18px",
+  baseLineHeight: 1.666,
+  headerFontFamily: ["Oswald"],
+  bodyFontFamily: ["Open Sans", "sans-serif"]
+  // See below for the full list of options.
+});
+
+typography.injectStyles();
+
 ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
