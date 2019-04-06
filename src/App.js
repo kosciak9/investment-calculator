@@ -2,9 +2,14 @@ import axios from "axios";
 import { BigFloat32 } from "bigfloat";
 import React, { Component } from "react";
 import InputRange from "react-input-range";
-import "react-input-range/lib/css/index.css";
 import Select from "react-select";
 import RenderedPortfolio from "./components/RenderedPortfolio";
+import "./styles/app/input-range.scss";
+import "./styles/app/layout.scss";
+import "./styles/app/input-range.scss";
+import "./styles/app/input-number.scss";
+import "./styles/app/input-select.scss";
+import "./styles/app/input-submit.scss";
 
 class App extends Component {
   constructor(props) {
@@ -22,7 +27,7 @@ class App extends Component {
         usdValueNow: new BigFloat32(1)
       },
       portfolio: [
-        // { id: String, priceBought: BigFloat32, amountBought: BigFloat32, usdValueNow: BigFloat32 }
+        // { id: String, label: String, priceBought: BigFloat32, amountBought: BigFloat32, usdValueNow: BigFloat32 }
       ]
     };
   }
@@ -104,6 +109,7 @@ class App extends Component {
     return (
       <div className="App">
         <section className="investment column">
+          <h2>Price when bought:</h2>
           <div className="range price-bought">
             <InputRange
               formatLabel={value => `$${value}`}
@@ -132,6 +138,7 @@ class App extends Component {
               value={this.state.form.priceBought}
             />
           </div>
+          <h2>Amount bought:</h2>
           <div className="range amount-bought">
             <InputRange
               maxValue={1000}
@@ -159,13 +166,19 @@ class App extends Component {
               value={this.state.form.amountBought}
             />
           </div>
+          <h2>Token bought:</h2>
           <Select
-            className="token-select"
+            className="token-select-container"
+            classNamePrefix="token-select"
             value={this.state.form.tokenBought}
             onChange={this.handleTokenChange}
             options={options}
           />
-          <button type="submit" onClick={this.handleAddToPortfolio}>
+          <button
+            className="add-button"
+            type="submit"
+            onClick={this.handleAddToPortfolio}
+          >
             Add
           </button>
         </section>

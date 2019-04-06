@@ -1,11 +1,11 @@
+import "normalize.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import "normalize.css";
-import "./index.css";
+import Typography from "typography";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import "./styles/index/general.scss";
 
-import Typography from "typography";
 
 const typography = new Typography({
   baseFontSize: "18px",

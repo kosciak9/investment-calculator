@@ -1,0 +1,9 @@
+@import "../index/variables.scss";
+
+.input {
+  line-height: 2em;
+  border: none;
+  border-bottom: 1px solid $color-complement-0;
+  text-align: center;
+  background-color: $color-primary-0;
+}

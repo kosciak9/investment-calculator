@@ -1,0 +1,27 @@
+@import "../index/variables.scss";
+
+.token-select-container {
+  .token-select__control {
+    background-color: $color-primary-0;
+    color: $color-text-0;
+    border-color: $color-complement-0;
+  }
+  .token-select__single-value {
+    color: $color-text-0;
+  }
+  .token-select__indicator-separator {
+    background-color: $color-complement-0;
+  }
+  .token-select__indicator {
+    border-color: $color-complement-0;
+  }
+  .token-select__menu {
+    background-color: $color-primary-0;
+    .token-select__option--is-focused {
+      background-color: $color-complement-4;
+    }
+    .token-select__option--is-selected {
+      background-color: $color-complement-1;
+    }
+  }
+}

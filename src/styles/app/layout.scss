@@ -1,0 +1,52 @@
+.App {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @media screen and (orientation: portrait) {
+    grid-template-columns: 1fr;
+  }
+  grid-column-gap: 50px;
+}
+
+.App > .column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 350px;
+  // max-width: 300px;
+}
+
+.App > .investment {
+  .token-select-container {
+    width: 100%;
+  }
+  .range {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .input-range {
+    width: 60%;
+    margin-right: 10%;
+    margin-bottom: 60px;
+  } 
+  .input {
+    width: 30%;
+    margin-bottom: 60px;
+  }
+}
+
+
+.App > .earnings {
+  @media screen and (orientation: portrait) {
+    grid-row-start: 1;
+    margin-bottom: 50px;
+  }
+  align-items: flex-end;
+  text-align: right;
+  .heading {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
