@@ -1,37 +1,34 @@
+import axios from "axios";
+import { BigFloat32 } from "bigfloat";
 import React, { Component } from "react";
-
 import InputRange from "react-input-range";
 import "react-input-range/lib/css/index.css";
-
 import Select from "react-select";
-
-import axios from "axios";
-
-import { BigFloat32 } from "bigfloat";
+import RenderedPortfolio from "./components/RenderedPortfolio";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      amountBought: 1,
-      priceBought: 1,
-      tokenBought: {
-        value: "btc",
-        label: "Bitcoin",
-        id: "bitcoin"
+      form: {
+        amountBought: 1,
+        priceBought: 1,
+        tokenBought: {
+          value: "btc",
+          label: "Bitcoin",
+          id: "bitcoin"
+        },
+        usdValueNow: new BigFloat32(1)
       },
-      vsCurrenciesNow: {
-        btc: new BigFloat32(1),
-        usd: new BigFloat32(1),
-        xrp: new BigFloat32(1),
-        eth: new BigFloat32(1)
-      }
+      portfolio: [
+        // { id: String, priceBought: BigFloat32, amountBought: BigFloat32, usdValueNow: BigFloat32 }
+      ]
     };
   }
 
   handleTokenChange = value => {
-    this.setState({ tokenBought: value }, () => {
+    this.setState({ form: { ...this.state.form, tokenBought: value } }, () => {
       this.updateTokenActualValue();
     });
   };
@@ -40,18 +37,16 @@ class App extends Component {
     axios
       .get("/simple/price", {
         params: {
-          ids: this.state.tokenBought.id,
-          vs_currencies: "btc,eth,usd,xrp"
+          ids: this.state.form.tokenBought.id,
+          vs_currencies: "usd"
         }
       })
       .then(response => {
-        const vsCurrenciesNow = response.data[this.state.tokenBought.id];
+        const vsCurrenciesNow = response.data[this.state.form.tokenBought.id];
         this.setState({
-          vsCurrenciesNow: {
-            btc: new BigFloat32(vsCurrenciesNow.btc),
-            eth: new BigFloat32(vsCurrenciesNow.eth),
-            usd: new BigFloat32(vsCurrenciesNow.usd),
-            xrp: new BigFloat32(vsCurrenciesNow.xrp)
+          form: {
+            ...this.state.form,
+            usdValueNow: new BigFloat32(vsCurrenciesNow.usd)
           }
         });
       });
@@ -65,33 +60,45 @@ class App extends Component {
     return value;
   };
 
+  handleAddToPortfolio = () => {
+    const newInvestment = {
+      id: this.state.form.tokenBought.id,
+      priceBought: new BigFloat32(this.state.form.priceBought),
+      amountBought: new BigFloat32(this.state.form.amountBought),
+      usdValueNow: this.state.form.usdValueNow
+    };
+    this.setState({ portfolio: [...this.state.portfolio, newInvestment] });
+    console.log("test successful");
+  };
+
   componentDidMount = () => {
     this.updateTokenActualValue();
   };
 
+  calculateEarnings = () => {
+    const { portfolio } = this.state;
+    const sum = portfolio.reduce((sum, investment) => {
+      console.log(investment);
+      return sum.add(
+        investment.amountBought.mul(
+          investment.usdValueNow.sub(investment.priceBought)
+        )
+      );
+    }, new BigFloat32(0));
+    return sum;
+  };
+
   render() {
+    // TODO: load tokens from API
     const options = [
       { value: "btc", label: "Bitcoin", id: "bitcoin" },
       { value: "eth", label: "Ethereum", id: "ethereum" },
       { value: "xrp", label: "Ripple", id: "ripple" }
     ];
 
-    const amountBought = new BigFloat32(this.state.amountBought);
-    const usdValueNow = new BigFloat32(this.state.vsCurrenciesNow.usd);
-    const priceBought = new BigFloat32(this.state.priceBought);
-    let usdEarnings = amountBought.mul(usdValueNow.sub(priceBought));
-    usdEarnings = this.trimValuesForDisplay(usdEarnings.toString());
-    const portfolioValue = {
-      btc: amountBought.mul(this.state.vsCurrenciesNow.btc).toString(),
-      eth: amountBought.mul(this.state.vsCurrenciesNow.eth).toString(),
-      xrp: amountBought.mul(this.state.vsCurrenciesNow.xrp).toString()
-    };
-
-    for (let key in portfolioValue) {
-      if (portfolioValue.hasOwnProperty(key)) {
-        portfolioValue[key] = this.trimValuesForDisplay(portfolioValue[key]);
-      }
-    }
+    const calculatedEarnings = this.trimValuesForDisplay(
+      this.calculateEarnings().toString()
+    );
 
     return (
       <div className="App">
@@ -101,8 +108,12 @@ class App extends Component {
               formatLabel={value => `$${value}`}
               maxValue={20000}
               minValue={1}
-              value={this.state.priceBought}
-              onChange={value => this.setState({ priceBought: value })}
+              value={this.state.form.priceBought}
+              onChange={value =>
+                this.setState({
+                  form: { ...this.state.form, priceBought: value }
+                })
+              }
             />
             <input
               max={20000}
@@ -110,17 +121,26 @@ class App extends Component {
               className="input price-input"
               type="number"
               onChange={event =>
-                this.setState({ priceBought: Number(event.target.value) })
+                this.setState({
+                  form: {
+                    ...this.state.form,
+                    priceBought: Number(event.target.value)
+                  }
+                })
               }
-              value={this.state.priceBought}
+              value={this.state.form.priceBought}
             />
           </div>
           <div className="range amount-bought">
             <InputRange
               maxValue={1000}
               minValue={1}
-              value={this.state.amountBought}
-              onChange={value => this.setState({ amountBought: value })}
+              value={this.state.form.amountBought}
+              onChange={value =>
+                this.setState({
+                  form: { ...this.state.form, amountBought: value }
+                })
+              }
             />
             <input
               max={1000}
@@ -128,25 +148,30 @@ class App extends Component {
               className="input amount-input"
               type="number"
               onChange={event =>
-                this.setState({ amountBought: Number(event.target.value) })
+                this.setState({
+                  form: {
+                    ...this.state.form,
+                    amountBought: Number(event.target.value)
+                  }
+                })
               }
-              value={this.state.amountBought}
+              value={this.state.form.amountBought}
             />
           </div>
           <Select
             className="token-select"
-            value={this.state.tokenBought}
+            value={this.state.form.tokenBought}
             onChange={this.handleTokenChange}
             options={options}
           />
+          <button type="submit" onClick={this.handleAddToPortfolio}>
+            Add
+          </button>
         </section>
         <aside className="earnings column">
           <h3 className="heading">earnings:</h3>
-          <div className="usd">${usdEarnings.toString()}</div>
-          <h3 className="heading">portfolio value in other cryptos:</h3>
-          <div className="btc">BTC: {portfolioValue.btc}</div>
-          <div className="eth">ETH: {portfolioValue.eth}</div>
-          <div className="xrp">XRP: {portfolioValue.xrp}</div>
+          <div className="usd">${calculatedEarnings}</div>
+          <RenderedPortfolio portfolio={this.state.portfolio} />
         </aside>
       </div>
     );
