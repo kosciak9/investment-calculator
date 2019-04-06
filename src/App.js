@@ -63,6 +63,7 @@ class App extends Component {
   handleAddToPortfolio = () => {
     const newInvestment = {
       id: this.state.form.tokenBought.id,
+      label: this.state.form.tokenBought.label,
       priceBought: new BigFloat32(this.state.form.priceBought),
       amountBought: new BigFloat32(this.state.form.amountBought),
       usdValueNow: this.state.form.usdValueNow

@@ -4,7 +4,7 @@ class RenderedPortfolio extends Component {
   render() {
     const investments = this.props.portfolio.map((investment, index) => (
       <div className="investment" key={index}>
-        {investment.id}: {investment.amountBought.toString()} *{" "}
+        {investment.label}: {investment.amountBought.toString()} *{" "}
         {investment.priceBought.toString()}
       </div>
     ));
