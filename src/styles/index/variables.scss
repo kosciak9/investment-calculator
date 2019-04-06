@@ -20,6 +20,11 @@ $color-complement-4: #312F22;
 $color-text-0: #D4D4D4; // Color for body text
 // (https://snook.ca/technical/colour_contrast/colour.html#fg=D4D4D4,bg=27262A)
 
+$color-text-optimal: #4AD45A; // Positive result color
+// (https://snook.ca/technical/colour_contrast/colour.html#fg=4AD45A,bg=27262A)
+
+$color-text-unoptimal: #FF8664; // Not Positive result color
+// (https://snook.ca/technical/colour_contrast/colour.html#fg=FF8664,bg=27262A) - not WCAG 2 AAA Compliant
 
 
 // As RGBa codes

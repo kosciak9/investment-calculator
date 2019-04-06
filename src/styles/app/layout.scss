@@ -13,10 +13,11 @@
   align-items: center;
   justify-content: center;
   min-width: 350px;
-  // max-width: 300px;
 }
 
 .App > .investment {
+  align-items: flex-start;
+
   .token-select-container {
     width: 100%;
   }
@@ -43,6 +44,7 @@
     grid-row-start: 1;
     margin-bottom: 50px;
   }
+  justify-content: flex-start;
   align-items: flex-end;
   text-align: right;
   .heading {

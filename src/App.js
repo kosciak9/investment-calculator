@@ -27,7 +27,8 @@ class App extends Component {
         usdValueNow: new BigFloat32(1)
       },
       portfolio: [
-        // { id: String, label: String, priceBought: BigFloat32, amountBought: BigFloat32, usdValueNow: BigFloat32 }
+        // { id: String, label: String, priceBought: BigFloat32, amountBought: BigFloat32, usdValueNow: BigFloat32,
+        // optimal: Boolean }
       ]
     };
   }
@@ -66,15 +67,17 @@ class App extends Component {
   };
 
   handleAddToPortfolio = () => {
+    const priceBought = new BigFloat32(this.state.form.priceBought);
     const newInvestment = {
       id: this.state.form.tokenBought.id,
       label: this.state.form.tokenBought.label,
-      priceBought: new BigFloat32(this.state.form.priceBought),
+      priceBought,
       amountBought: new BigFloat32(this.state.form.amountBought),
-      usdValueNow: this.state.form.usdValueNow
+      usdValueNow: this.state.form.usdValueNow,
+      optimal: priceBought.cmp(this.state.form.usdValueNow) < 0
     };
     this.setState({ portfolio: [...this.state.portfolio, newInvestment] });
-    console.log("test successful");
+    console.log(newInvestment);
   };
 
   componentDidMount = () => {
@@ -109,7 +112,7 @@ class App extends Component {
     return (
       <div className="App">
         <section className="investment column">
-          <h2>Price when bought:</h2>
+          <h4>price when bought:</h4>
           <div className="range price-bought">
             <InputRange
               formatLabel={value => `$${value}`}
@@ -138,7 +141,7 @@ class App extends Component {
               value={this.state.form.priceBought}
             />
           </div>
-          <h2>Amount bought:</h2>
+          <h4>amount bought:</h4>
           <div className="range amount-bought">
             <InputRange
               maxValue={1000}
@@ -166,7 +169,7 @@ class App extends Component {
               value={this.state.form.amountBought}
             />
           </div>
-          <h2>Token bought:</h2>
+          <h4>token bought:</h4>
           <Select
             className="token-select-container"
             classNamePrefix="token-select"
@@ -183,8 +186,8 @@ class App extends Component {
           </button>
         </section>
         <aside className="earnings column">
-          <h3 className="heading">earnings:</h3>
-          <div className="usd">${calculatedEarnings}</div>
+          <div className="heading">earnings:</div>
+          <h3 className="usd">${calculatedEarnings}</h3>
           <RenderedPortfolio portfolio={this.state.portfolio} />
         </aside>
       </div>

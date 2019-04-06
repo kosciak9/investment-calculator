@@ -1,0 +1,21 @@
+@import "../index/variables.scss";
+
+.portfolio {
+  text-align: center;
+  thead {
+    font-size: 0.75em;
+    tr {
+      th {
+        text-align: center;
+      }
+    }
+  }
+}
+
+.optimal {
+  color: $color-text-optimal;
+}
+
+.not-optimal {
+  color: $color-text-unoptimal;
+}
